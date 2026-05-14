@@ -12,7 +12,7 @@ import {
 
 import { useState } from "react";
 
-import { QrReader } from "react-qr-reader";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 export default function VerifyPage() {
 
@@ -142,7 +142,7 @@ export default function VerifyPage() {
               "
             >
 
-              <QrReader
+              <Scanner
                 constraints={{
                   facingMode:
                     "environment",
