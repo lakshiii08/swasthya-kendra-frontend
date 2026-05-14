@@ -147,36 +147,14 @@ export default function VerifyPage() {
                   facingMode:
                     "environment",
                 }}
+                onScan={(result) => {
 
-                <Scanner
-  constraints={{
-    facingMode: "environment",
-  }}
-  onScan={(result) => {
-
-    if (result?.[0]?.rawValue) {
-
-      setHash(
-        result[0].rawValue
-      );
-    }
-  }}
-  onError={(error) => {
-
-    console.log(error);
-
-  }}
-  styles={{
-    container: {
-      width: "100%",
-    },
-  }}
-/>
-
-                  if (!!result) {
+                  if (
+                    result?.[0]?.rawValue
+                  ) {
 
                     const text =
-                      result.getText();
+                      result[0].rawValue;
 
                     setHash(text);
 
@@ -184,10 +162,19 @@ export default function VerifyPage() {
                       text
                     );
                   }
-                }}
 
-                style={{
-                  width: "100%",
+                }}
+                onError={(error) => {
+
+                  console.log(
+                    error
+                  );
+
+                }}
+                styles={{
+                  container: {
+                    width: "100%",
+                  },
                 }}
               />
 
