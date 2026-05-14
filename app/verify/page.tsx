@@ -148,10 +148,30 @@ export default function VerifyPage() {
                     "environment",
                 }}
 
-                onResult={(
-                  result,
-                  error
-                ) => {
+                <Scanner
+  constraints={{
+    facingMode: "environment",
+  }}
+  onScan={(result) => {
+
+    if (result?.[0]?.rawValue) {
+
+      setHash(
+        result[0].rawValue
+      );
+    }
+  }}
+  onError={(error) => {
+
+    console.log(error);
+
+  }}
+  styles={{
+    container: {
+      width: "100%",
+    },
+  }}
+/>
 
                   if (!!result) {
 
