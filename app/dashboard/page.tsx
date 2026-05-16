@@ -1,9 +1,9 @@
 "use client";
 
 import Sidebar from "@/components/Sidebar";
-
 import Link from "next/link";
 import WalletConnect from "@/components/WalletConnect";
+
 import {
   useEffect,
   useState,
@@ -27,8 +27,7 @@ import {
 
 export default function DashboardPage() {
 
-  const { language } =
-    useLanguage();
+  const { language } = useLanguage();
 
   const router = useRouter();
 
@@ -40,32 +39,34 @@ export default function DashboardPage() {
 
   // FETCH DOCTORS
 
-  const fetchDoctors =
-    async () => {
+  const fetchDoctors = async () => {
 
-      try {
+    try {
 
-        const res = await fetch(
-          "http://localhost:5000/api/doctors"
-        );
+      const res = await fetch(
+        "http://localhost:5000/api/doctors"
+      );
 
-        const data =
-          await res.json();
+      const data = await res.json();
 
-        setDoctors(data);
+      console.log("Doctors API:", data);
 
-      } catch (error) {
+      setDoctors(
+        data.doctors || data.data || []
+      );
 
-        console.log(error);
+    } catch (error) {
 
-      }
-    };
+      console.log(error);
+
+      setDoctors([]);
+
+    }
+  };
 
   // PROTECT DASHBOARD
 
   useEffect(() => {
-
-    // CHECK USER
 
     const storedUser =
       localStorage.getItem("user");
@@ -80,8 +81,6 @@ export default function DashboardPage() {
         JSON.parse(storedUser)
       );
     }
-
-    // LOAD DOCTORS
 
     fetchDoctors();
 
@@ -160,29 +159,29 @@ export default function DashboardPage() {
                   "
                 >
 
-                  Logged in as:
-                  {" "}
-                  {user.email}
+                  Logged in as: {user.email}
 
                 </p>
 
               )}
 
             </div>
-{/* WALLET */}
 
-<div
-  className="
-    bg-white
-    p-4
-    rounded-2xl
-    shadow-lg
-  "
->
+            {/* WALLET */}
 
-  <WalletConnect />
+            <div
+              className="
+                bg-white
+                p-4
+                rounded-2xl
+                shadow-lg
+              "
+            >
 
-</div>
+              <WalletConnect />
+
+            </div>
+
             {/* HEALTH SCORE */}
 
             <div
@@ -410,106 +409,6 @@ export default function DashboardPage() {
 
           </div>
 
-          {/* QUICK ACCESS */}
-
-          <div className="mt-12">
-
-            <h2
-              className="
-                text-3xl
-                font-bold
-                text-slate-800
-                mb-6
-              "
-            >
-
-              {language === "en"
-                ? "Quick Access"
-                : "त्वरित एक्सेस"}
-
-            </h2>
-
-            <div
-              className="
-                grid
-                md:grid-cols-4
-                gap-6
-              "
-            >
-
-              {[
-                {
-                  name: "AI Chat",
-                  link: "/ai-chat",
-                },
-                {
-                  name: "Appointments",
-                  link: "/appointments",
-                },
-                {
-                  name: "Pharmacy",
-                  link: "/pharmacy",
-                },
-                {
-                  name: "Records",
-                  link: "/records",
-                },
-                {
-                  name: "Emergency",
-                  link: "/emergency",
-                },
-                {
-                  name: "Payment",
-                  link: "/payment",
-                },
-                {
-                  name: "Doctor",
-                  link: "/doctor",
-                },
-                {
-                  name: "Admin",
-                  link: "/admin",
-                },
-              ].map((item, index) => (
-
-                <Link
-                  key={index}
-                  href={item.link}
-                >
-
-                  <div
-                    className="
-                      bg-white
-                      p-6
-                      rounded-2xl
-                      shadow-xl
-                      hover:scale-105
-                      transition-all
-                      cursor-pointer
-                    "
-                  >
-
-                    <h3
-                      className="
-                        text-xl
-                        font-bold
-                      "
-                    >
-
-                      {item.name}
-
-                    </h3>
-
-                  </div>
-
-                </Link>
-
-              ))}
-
-            </div>
-
-          </div>
-
           {/* SPECIALISTS */}
 
           <div className="mt-12">
@@ -538,144 +437,145 @@ export default function DashboardPage() {
               "
             >
 
-              {doctors.map((doctor) => (
-
-                <div
-                  key={doctor._id}
-                  className="
-                    bg-white
-                    rounded-3xl
-                    p-8
-                    shadow-xl
-                    hover:scale-[1.02]
-                    transition-all
-                    duration-300
-                  "
-                >
+              {Array.isArray(doctors) &&
+                doctors.map((doctor) => (
 
                   <div
+                    key={doctor.id}
                     className="
-                      flex
-                      items-center
-                      gap-6
+                      bg-white
+                      rounded-3xl
+                      p-8
+                      shadow-xl
+                      hover:scale-[1.02]
+                      transition-all
+                      duration-300
                     "
                   >
 
                     <div
                       className="
-                        bg-teal-100
-                        p-6
-                        rounded-full
+                        flex
+                        items-center
+                        gap-6
                       "
                     >
 
-                      <Stethoscope
-                        className="text-teal-700"
-                        size={50}
-                      />
+                      <div
+                        className="
+                          bg-teal-100
+                          p-6
+                          rounded-full
+                        "
+                      >
+
+                        <Stethoscope
+                          className="text-teal-700"
+                          size={50}
+                        />
+
+                      </div>
+
+                      <div>
+
+                        <h3
+                          className="
+                            text-2xl
+                            font-bold
+                            text-slate-800
+                          "
+                        >
+
+                          {doctor.name}
+
+                        </h3>
+
+                        <p
+                          className="
+                            text-teal-600
+                            text-lg
+                          "
+                        >
+
+                          {doctor.specialty}
+
+                        </p>
+
+                        <p
+                          className="
+                            text-slate-500
+                            mt-2
+                          "
+                        >
+
+                          {doctor.experience}
+
+                        </p>
+
+                      </div>
 
                     </div>
 
-                    <div>
-
-                      <h3
-                        className="
-                          text-2xl
-                          font-bold
-                          text-slate-800
-                        "
-                      >
-
-                        {doctor.name}
-
-                      </h3>
-
-                      <p
-                        className="
-                          text-teal-600
-                          text-lg
-                        "
-                      >
-
-                        {doctor.specialty}
-
-                      </p>
-
-                      <p
-                        className="
-                          text-slate-500
-                          mt-2
-                        "
-                      >
-
-                        {doctor.experience}
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <div
-                    className="
-                      flex justify-between
-                      items-center
-                      mt-8
-                      flex-wrap
-                      gap-4
-                    "
-                  >
-
-                    <div>
-
-                      <p className="text-slate-500">
-                        Consultation Fee
-                      </p>
-
-                      <h2
-                        className="
-                          text-3xl
-                          font-bold
-                          text-emerald-600
-                        "
-                      >
-
-                        ₹{doctor.fee}
-
-                      </h2>
-
-                    </div>
-
-                    <Link
-                      href={`/doctor/${doctor._id}`}
+                    <div
+                      className="
+                        flex justify-between
+                        items-center
+                        mt-8
+                        flex-wrap
+                        gap-4
+                      "
                     >
 
-                      <button
-                        className="
-                          px-6 py-3
-                          bg-gradient-to-r
-                          from-teal-600
-                          to-cyan-500
-                          text-white
-                          rounded-2xl
-                          font-semibold
-                          hover:scale-105
-                          transition-all
-                          duration-300
-                        "
+                      <div>
+
+                        <p className="text-slate-500">
+                          Consultation Fee
+                        </p>
+
+                        <h2
+                          className="
+                            text-3xl
+                            font-bold
+                            text-emerald-600
+                          "
+                        >
+
+                          ₹{doctor.fee}
+
+                        </h2>
+
+                      </div>
+
+                      <Link
+                        href={`/doctor/${doctor.id}`}
                       >
 
-                        View Doctor
+                        <button
+                          className="
+                            px-6 py-3
+                            bg-gradient-to-r
+                            from-teal-600
+                            to-cyan-500
+                            text-white
+                            rounded-2xl
+                            font-semibold
+                            hover:scale-105
+                            transition-all
+                            duration-300
+                          "
+                        >
 
-                      </button>
+                          View Doctor
 
-                    </Link>
+                        </button>
+
+                      </Link>
+
+                    </div>
 
                   </div>
 
-                </div>
-
-              ))}
+                ))}
 
             </div>
 
